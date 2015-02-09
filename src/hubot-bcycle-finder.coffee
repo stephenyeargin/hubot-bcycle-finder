@@ -14,7 +14,7 @@
 #   hubot bcycle list - Gets a listing of stations in the configured program
 #   hubot bcycle me <station id> - Returns the status for a given station ID
 #   hubot bcycle search <query> - Searches the listing of stations and returns matching names
-#   hubot programs - Retrieves a list of Program IDs
+#   hubot bcycle programs - Retrieves a list of Program IDs
 #
 # Author:
 #   stephenyeargin
