@@ -1,39 +1,32 @@
 {
   "name": "hubot-bcycle-finder",
   "description": "Get the status of nearby B-cycle stations",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "stephenyeargin",
   "license": "MIT",
-
   "keywords": [
     "hubot",
     "hubot-scripts",
     "bcycle",
     "b-cycle"
   ],
-
   "repository": {
     "type": "git",
     "url": "git://github.com/stephenyeargin/hubot-bcycle-finder.git"
   },
-
   "bugs": {
     "url": "https://github.com/stephenyeargin/hubot-bcycle-finder/issues"
   },
-
   "dependencies": {
     "coffee-script": "~1.6"
   },
-
   "devDependencies": {
     "mocha": "*",
     "chai": "*",
     "sinon-chai": "*",
     "sinon": "*"
   },
-
   "main": "index.coffee",
-
   "scripts": {
     "test": "script/test"
   }
