@@ -30,6 +30,7 @@ module.exports = (robot) ->
   robot.respond /bcycle$/i, (msg) ->
     return unless checkBCycleConfiguration msg
 
+    # Process default stations
     if default_stations != ''
       default_stations = default_stations.toString().split(',')
     else
@@ -54,8 +55,7 @@ module.exports = (robot) ->
         # Print station data
         for station in stations
           continue unless station.Id.toString() in default_stations
-
-          printStationData station, msg
+          printStationStatus station, msg
 
   ##
   # Get a listing of stations in the configured program
@@ -74,10 +74,7 @@ module.exports = (robot) ->
 
         # Print station data
         for station in stations
-          if station.PublicText
-            msg.send "##{station.Id} - #{station.Name} (#{station.PublicText})"
-          else
-            msg.send "##{station.Id} - #{station.Name}"
+          msg.send formatStationName station
 
   ##
   # Returns the status for a given station ID
@@ -99,8 +96,7 @@ module.exports = (robot) ->
         # Print station data
         for station in stations
           continue if station.Id.toString() != query
-
-          printStationData station, msg
+          printStationStatus station, msg
 
   ##
   # Searches the listing of stations and returns status
@@ -124,20 +120,17 @@ module.exports = (robot) ->
           if ~station.Name.toLowerCase().indexOf query
             station_matches.push station
 
+        # No matches
         if station_matches.length == 0
           return msg.send "No stations matched your query: #{query}"
 
         # Print station data
         for station in station_matches
-          if station.PublicText
-            msg.send "##{station.Id} - #{station.Name} (#{station.PublicText})"
-          else
-            msg.send "##{station.Id} - #{station.Name}"
+          msg.send formatStationName station
 
   ##
   # Get a list of programs
   robot.respond /bcycle programs$/i, (msg) ->
-
     response = makeBCycleRequest {
         method: 'ListPrograms',
         id: ''
@@ -150,25 +143,38 @@ module.exports = (robot) ->
         for program in programs
           msg.send "#{program.ProgramId} - #{program.Name}"
 
+  ##
+  # Make B-cycle Request
   makeBCycleRequest = (options, callback) ->
     robot.http("#{api_url}/#{options.method}/#{options.id}")
       .header('ApiKey', api_key)
       .get() (err, res, body) ->
         callback(err, res, body)
 
+  ##
+  # Check for Error
   checkForError = (err, res, body, msg) ->
       unless res.statusCode == 200
         msg.send "#{res.statusCode}: #{body}"
         return false
       true
 
-  printStationData = (station, msg) ->
-    if station.PublicText
-      msg.send "##{station.Id} - #{station.Name} (#{station.PublicText})"
-    else
-      msg.send "##{station.Id} - #{station.Name}"
+  ##
+  # Print Station Status
+  printStationStatus = (station, msg) ->
+    msg.send formatStationName station
     msg.send "> #{station.Status}: Bikes: #{station.BikesAvailable} | Docks: #{station.DocksAvailable} | Total: #{station.TotalDocks}"
 
+  ##
+  # Format Station Name
+  formatStationName = (station) ->
+    if station.PublicText
+      return "##{station.Id} - #{station.Name} (#{station.PublicText})"
+    else
+      return "##{station.Id} - #{station.Name}"
+
+  ##
+  # Check B-cycle Configuration
   checkBCycleConfiguration = (msg) ->
     unless api_key && program_id
       msg.send "You are missing the BCYCLE_API_KEY and/or BCYCLE_PROGRAM_ID configuration variables."
