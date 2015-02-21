@@ -24,7 +24,7 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 
 ### Configuration
 
-The script has tree environment variables.
+The script has three environment variables.
 
 - `BCYCLE_API_KEY` is the one provided at registration
 - `BCYCLE_PROGRAM_ID` is an integer that corresponds with your city.
