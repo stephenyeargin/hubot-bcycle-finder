@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Hubot B-cycle Finder : Get the status of nearby B-cycle stations">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Hubot B-cycle Finder</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/stephenyeargin/hubot-bcycle-finder">View on GitHub</a>
+
+          <h1 id="project_title">Hubot B-cycle Finder</h1>
+          <h2 id="project_tagline">Get the status of nearby B-cycle stations</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/stephenyeargin/hubot-bcycle-finder/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/stephenyeargin/hubot-bcycle-finder/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h2>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span class="octicon octicon-link"></span></a>Getting Started</h2>
+
+<p>The first step is to apply for a B-cycle API key. You will need to sign an agreement with B-cycle to use the API. To get started, use the website's <a href="https://www.bcycle.com/contact-us">contact form</a>. They are really nice over there.</p>
+
+<p>You will receive an API key as well as a PDF document outlining how to use the API as soon as you've returned the agreement.</p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>In your hubot repository, run:</p>
+
+<p><code>npm install hubot-bcycle-finder --save</code></p>
+
+<p>Then add <strong>hubot-bcycle-finder</strong> to your <code>external-scripts.json</code>:</p>
+
+<div class="highlight highlight-json"><pre>[<span class="pl-s1"><span class="pl-pds">"</span>hubot-bcycle-finder<span class="pl-pds">"</span></span>]</pre></div>
+
+<h3>
+<a id="configuration" class="anchor" href="#configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Configuration</h3>
+
+<p>The script has three environment variables.</p>
+
+<ul>
+<li>
+<code>BCYCLE_API_KEY</code> is the one provided at registration</li>
+<li>
+<code>BCYCLE_PROGRAM_ID</code> is an integer that corresponds with your city.
+
+<ul>
+<li>You can retrieve an up-to-date program list by using <code>hubot bcycle programs</code>
+</li>
+</ul>
+</li>
+<li>
+<code>BCYCLE_DEFAULT_STATIONS</code> is a comma separated list of integers of your preferred stations
+
+<ul>
+<li>You can retrieve the station IDs by using <code>hubot bcycle search &lt;some query&gt;</code> </li>
+</ul>
+</li>
+</ul>
+
+<h3>
+<a id="heroku" class="anchor" href="#heroku" aria-hidden="true"><span class="octicon octicon-link"></span></a>Heroku</h3>
+
+<div class="highlight highlight-bash"><pre>heroku config:<span class="pl-s3">set</span> BCYCLE_API_KEY=YOUR-API-KEYHERE
+heroku config:<span class="pl-s3">set</span> BCYCLE_PROGRAM_ID=64
+heroku config:<span class="pl-s3">set</span> BCYCLE_DEFAULT_STATIONS=2171,2173</pre></div>
+
+<h3>
+<a id="standard" class="anchor" href="#standard" aria-hidden="true"><span class="octicon octicon-link"></span></a>Standard</h3>
+
+<pre><code>export BCYCLE_API_KEY=YOUR-API-KEYHERE
+export BCYCLE_PROGRAM_ID=64
+export BCYCLE_DEFAULT_STATIONS=2171,2173
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="hubot-bcycle" class="anchor" href="#hubot-bcycle" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>hubot bcycle</code>
+</h3>
+
+<p>Returns the status of the default stations, if any.</p>
+
+<pre><code>user&gt; hubot bcycle
+hubot&gt; #2171 - Music Row Roundabout: 16th Ave S (B card only)
+hubot&gt; &gt; Active: Bikes: 8 | Docks: 3 | Total: 11
+hubot&gt; #2173 - Frist Center: 9th Ave S &amp; Demonbreun St
+hubot&gt; &gt; Active: Bikes: 6 | Docks: 5 | Total: 11
+</code></pre>
+
+<h3>
+<a id="hubot-bcycle-list" class="anchor" href="#hubot-bcycle-list" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>hubot bcycle list</code>
+</h3>
+
+<p>Get a listing of stations in the configured program. <em>Note: This will likely flood your chat room. Consider using <code>hubot bcycle search</code> instead.</em></p>
+
+<pre><code>user&gt; hubot bcycle list
+hubot&gt; #2162 - The District: Commerce &amp; 2nd Ave N
+hubot&gt; #2164 - North Capitol: 4th Ave N &amp; James Robertson Pkwy (Check outs By B-card only)
+hubot&gt; #2165 - Fifth Third Plaza: Church St between 4th &amp; 5th Ave N
+hubot&gt; #2166 - Public Square: 3rd Ave N &amp; Union St
+hubot&gt; #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
+hubot&gt; #2169 - TPAC: 6th Ave N &amp; Union St
+hubot&gt; #2170 - The Gulch: 11th Ave S &amp; 12th Ave S
+hubot&gt; #2171 - Music Row Roundabout: 16th Ave S (B card only)
+hubot&gt; #2172 - Centennial Park: 27th Ave N
+hubot&gt; #2173 - Frist Center: 9th Ave S &amp; Demonbreun St
+hubot&gt; #2174 - Fisk/Meharry: Jefferson St &amp; Dr. D.B. Todd Blvd
+hubot&gt; #2175 - Hillsboro Village: Wedgewood Ave &amp; 21st Ave S
+hubot&gt; #2176 - Rolling Mill Hill: Hermitage Ave &amp; Middleton St
+hubot&gt; #2177 - 5 Points East Nashville: S 11th St
+[...]
+</code></pre>
+
+<h3>
+<a id="hubot-bcycle-me-station-id" class="anchor" href="#hubot-bcycle-me-station-id" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>hubot bcycle me &lt;station id&gt;</code>
+</h3>
+
+<p>Returns the status for a given station ID.</p>
+
+<pre><code>user&gt; hubot bcycle me 2162
+hubot&gt; #2162 - The District: Commerce &amp; 2nd Ave N
+hubot&gt; &gt; Active: Bikes: 7 | Docks: 4 | Total: 11
+</code></pre>
+
+<h3>
+<a id="hubot-bcycle-search-query" class="anchor" href="#hubot-bcycle-search-query" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>hubot bcycle search &lt;query&gt;</code>
+</h3>
+
+<p>Searches the listing of stations and returns matching names.</p>
+
+<pre><code>user&gt; hubot bcycle search cumberland
+hubot&gt; #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
+</code></pre>
+
+<h3>
+<a id="hubot-bcycle-programs" class="anchor" href="#hubot-bcycle-programs" aria-hidden="true"><span class="octicon octicon-link"></span></a><code>hubot bcycle programs</code>
+</h3>
+
+<p>Retrieves a list of Program IDs.</p>
+
+<pre><code>user&gt; hubot bcycle programs
+hubot&gt; 76 - ArborBike
+hubot&gt; 72 - Austin B-cycle
+hubot&gt; 71 - Battle Creek B-cycle
+hubot&gt; 68 - Bikesantiago
+hubot&gt; 54 - Boulder B-cycle
+hubot&gt; 53 - Broward B-cycle
+hubot&gt; 70 - Bublr Bikes
+hubot&gt; 61 - Charlotte B-cycle
+hubot&gt; 80 - Cincy Red Bike
+hubot&gt; 74 - Columbia County B-cycle
+hubot&gt; 82 - Dallas Fair Park
+hubot&gt; 36 - Denver Bike Sharing
+hubot&gt; 45 - Des Moines B-cycle
+hubot&gt; 60 - DFC B-cycle
+hubot&gt; 67 - Fort Worth Bike Sharing
+hubot&gt; 81 - Great Rides Bike Share
+hubot&gt; 66 - GREENbike
+hubot&gt; 65 - Greenville B-cycle
+hubot&gt; 47 - gRide
+hubot&gt; 49 - Hawaii B-cycle
+hubot&gt; 56 - Heartland B-cycle
+hubot&gt; 59 - Houston B-cycle
+hubot&gt; 75 - Indy - Pacers Bikeshare 
+hubot&gt; 62 - Kansas City B-cycle
+hubot&gt; 55 - Madison B-cycle
+hubot&gt; 64 - Nashville B-cycle
+hubot&gt; 79 - Rapid City B-cycle
+hubot&gt; 48 - San Antonio B-cycle
+hubot&gt; 73 - Savannah
+hubot&gt; 57 - Spartanburg B-cycle
+hubot&gt; 77 - Whippany NJ
+</code></pre>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Hubot B-cycle Finder maintained by <a href="https://github.com/stephenyeargin">stephenyeargin</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
