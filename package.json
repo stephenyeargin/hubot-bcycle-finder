@@ -21,13 +21,16 @@
     "coffee-script": "~1.6"
   },
   "devDependencies": {
-    "mocha": "*",
     "chai": "*",
-    "sinon-chai": "*",
-    "sinon": "*"
+    "husky": "^0.13.3",
+    "mocha": "*",
+    "sinon": "*",
+    "sinon-chai": "*"
   },
   "main": "index.coffee",
   "scripts": {
-    "test": "script/test"
+    "test": "script/test",
+    "precommit": "npm test",
+    "prepush": "npm test"
   }
 }
