@@ -1,8 +1,8 @@
 # Hubot B-cycle Finder
 
-Get the status of nearby B-cycle stations
+[![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder.png)](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder)
 
-[![Build Status](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder.png)](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder)
+Get the status of nearby B-cycle stations
 
 ## Getting Started
 
@@ -24,7 +24,7 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 
 ### Configuration
 
-The script has tree environment variables.
+The script has three environment variables.
 
 - `BCYCLE_API_KEY` is the one provided at registration
 - `BCYCLE_PROGRAM_ID` is an integer that corresponds with your city.
