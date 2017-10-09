@@ -10,7 +10,7 @@ describe 'hubot-bcycle-finder', ->
       respond: sinon.spy()
       hear: sinon.spy()
 
-    require('../src/hubot-bcycle-finder')(@robot)
+    require('../src/bcycle-finder')(@robot)
 
   it 'registers bcycle listener', ->
     expect(@robot.respond).to.have.been.calledWith(/bcycle$/i)
