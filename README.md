@@ -18,7 +18,7 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 
 ### Configuration
 
-The script has three environment variables.
+The script has two environment variables.
 
 - `BCYCLE_CITY` is the name of the BCycle city.
 - `BCYCLE_DEFAULT_STATIONS` is a comma separated list of integers of your preferred stations
@@ -92,4 +92,13 @@ Searches the listing of stations and returns matching names.
 ```
 user> hubot bcycle search cumberland
 hubot> #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
+```
+
+### `hubot bcycle info`
+
+Returns information about your city's program.
+
+```
+user> hubot bcycle info
+hubot> Nashville BCycle | https://nashville.bcycle.com | (615) 625-2153 | emagas@nashvilledowntown.com
 ```

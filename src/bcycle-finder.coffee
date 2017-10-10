@@ -13,6 +13,7 @@
 #   hubot bcycle list - Gets a listing of stations in the configured program
 #   hubot bcycle me <station id> - Returns the status for a given station ID
 #   hubot bcycle search <query> - Searches the listing of stations
+#   hubot bcycle info - Contact information for your program
 #
 # Author:
 #   stephenyeargin
@@ -23,20 +24,20 @@ module.exports = (robot) ->
   config =
     api_url: 'https://gbfs.bcycle.com'
     city: process.env.BCYCLE_CITY || 'madison'
-    default_stations: process.env.BCYCLE_DEFAULT_STATIONS
+    default_stations: process.env.BCYCLE_DEFAULT_STATIONS || ''
 
   ##
   # Returns the status of the default stations, if any
   robot.respond /bcycle$/i, (msg) ->
     # Process default stations
     if config.default_stations != ''
-      default_stations = config.default_stations.toString().split(',')
+      default_stations = config.default_stations.split(',')
     else
       default_stations = []
 
     # Check for default stations
     unless default_stations.length > 0
-      msg.send "You do not have any default stations configured."
+      msg.send "You do not have any BCYCLE_DEFAULT_STATIONS configured."
       msg.send "Use `#{robot.name} bcycle search <query>` to find stations."
       return
 
@@ -138,6 +139,17 @@ module.exports = (robot) ->
       # Print station data
       for station in station_matches
         msg.send formatStationName station
+
+  ##
+  # Returns contact information for program
+  robot.respond /bcycle info$/i, (msg) ->
+    makeBCycleRequest 'system_information', (err, res, body) ->
+      return unless checkForError err, res, body, msg
+    
+      # Parse system information
+      response = JSON.parse(body)
+      
+      msg.send "#{response.data.name} | #{response.data.url} | #{response.data.phone_number} | #{response.data.email}"
 
   ##
   # Make BCycle Request
