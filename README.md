@@ -1,14 +1,8 @@
-# Hubot B-cycle Finder
+# Hubot BCycle Finder
 
 [![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder.png)](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder)
 
-Get the status of nearby B-cycle stations
-
-## Getting Started
-
-The first step is to apply for a B-cycle API key. You will need to sign an agreement with B-cycle to use the API. To get started, use the website's [contact form](https://www.bcycle.com/contact-us). They are really nice over there.
-
-You will receive an API key as well as a PDF document outlining how to use the API as soon as you've returned the agreement.
+Get the status of nearby BCycle stations
 
 ## Installation
 
@@ -24,27 +18,23 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 
 ### Configuration
 
-The script has three environment variables.
+The script has two environment variables.
 
-- `BCYCLE_API_KEY` is the one provided at registration
-- `BCYCLE_PROGRAM_ID` is an integer that corresponds with your city.
- - You can retrieve an up-to-date program list by using `hubot bcycle programs`
+- `BCYCLE_CITY` is the name of the BCycle city.
 - `BCYCLE_DEFAULT_STATIONS` is a comma separated list of integers of your preferred stations
  - You can retrieve the station IDs by using `hubot bcycle search <some query>` 
 
 ### Heroku
 
 ```bash
-heroku config:set BCYCLE_API_KEY=YOUR-API-KEYHERE
-heroku config:set BCYCLE_PROGRAM_ID=64
+heroku config:set BCYCLE_CITY=nashville
 heroku config:set BCYCLE_DEFAULT_STATIONS=2171,2173
 ```
 
 ### Standard
 
 ```
-export BCYCLE_API_KEY=YOUR-API-KEYHERE
-export BCYCLE_PROGRAM_ID=64
+export BCYCLE_CITY=nashville
 export BCYCLE_DEFAULT_STATIONS=2171,2173
 ```
 
@@ -57,9 +47,9 @@ Returns the status of the default stations, if any.
 ```
 user> hubot bcycle
 hubot> #2171 - Music Row Roundabout: 16th Ave S (B card only)
-hubot> > Active: Bikes: 8 | Docks: 3 | Total: 11
+hubot> > Active | Bikes: 8 | Docks: 3 | Total: 11
 hubot> #2173 - Frist Center: 9th Ave S & Demonbreun St
-hubot> > Active: Bikes: 6 | Docks: 5 | Total: 11
+hubot> > Active | Bikes: 6 | Docks: 5 | Total: 11
 ```
 
 ### `hubot bcycle list`
@@ -69,7 +59,7 @@ Get a listing of stations in the configured program. _Note: This will likely flo
 ```
 user> hubot bcycle list
 hubot> #2162 - The District: Commerce & 2nd Ave N
-hubot> #2164 - North Capitol: 4th Ave N & James Robertson Pkwy (Check outs By B-card only)
+hubot> #2164 - North Capitol: 4th Ave N & James Robertson Pkwy
 hubot> #2165 - Fifth Third Plaza: Church St between 4th & 5th Ave N
 hubot> #2166 - Public Square: 3rd Ave N & Union St
 hubot> #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
@@ -104,41 +94,11 @@ user> hubot bcycle search cumberland
 hubot> #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
 ```
 
-### `hubot bcycle programs`
+### `hubot bcycle info`
 
-Retrieves a list of Program IDs.
+Returns information about your city's program.
 
 ```
-user> hubot bcycle programs
-hubot> 76 - ArborBike
-hubot> 72 - Austin B-cycle
-hubot> 71 - Battle Creek B-cycle
-hubot> 68 - Bikesantiago
-hubot> 54 - Boulder B-cycle
-hubot> 53 - Broward B-cycle
-hubot> 70 - Bublr Bikes
-hubot> 61 - Charlotte B-cycle
-hubot> 80 - Cincy Red Bike
-hubot> 74 - Columbia County B-cycle
-hubot> 82 - Dallas Fair Park
-hubot> 36 - Denver Bike Sharing
-hubot> 45 - Des Moines B-cycle
-hubot> 60 - DFC B-cycle
-hubot> 67 - Fort Worth Bike Sharing
-hubot> 81 - Great Rides Bike Share
-hubot> 66 - GREENbike
-hubot> 65 - Greenville B-cycle
-hubot> 47 - gRide
-hubot> 49 - Hawaii B-cycle
-hubot> 56 - Heartland B-cycle
-hubot> 59 - Houston B-cycle
-hubot> 75 - Indy - Pacers Bikeshare 
-hubot> 62 - Kansas City B-cycle
-hubot> 55 - Madison B-cycle
-hubot> 64 - Nashville B-cycle
-hubot> 79 - Rapid City B-cycle
-hubot> 48 - San Antonio B-cycle
-hubot> 73 - Savannah
-hubot> 57 - Spartanburg B-cycle
-hubot> 77 - Whippany NJ
+user> hubot bcycle info
+hubot> Nashville BCycle | https://nashville.bcycle.com | (615) 625-2153 | emagas@nashvilledowntown.com
 ```
