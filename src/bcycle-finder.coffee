@@ -1,38 +1,36 @@
 # Description:
-#   Get the status of nearby B-cycle stations
+#   Get the status of nearby BCycle stations
 #
 # Dependencies:
 #   None
 #
 # Configuration:
-#   BCYCLE_API_KEY - (string) API key provided at registration
-#   BCYCLE_PROGRAM_ID - (int) The program (city) identifier
-#   BCYCLE_DEFAULT_STATIONS - (string) Comma separated list of default stations
+#   BCYCLE_CITY - name of the BCycle city, defaults to Madison
+#   BCYCLE_DEFAULT_STATIONS - (optional) comma separated list of station IDs
 #
 # Commands:
 #   hubot bcycle - Returns the status of the default stations, if any
 #   hubot bcycle list - Gets a listing of stations in the configured program
 #   hubot bcycle me <station id> - Returns the status for a given station ID
-#   hubot bcycle search <query> - Searches the listing of stations and returns matching names
-#   hubot bcycle programs - Retrieves a list of Program IDs
+#   hubot bcycle search <query> - Searches the listing of stations
 #
 # Author:
 #   stephenyeargin
 
+_ = require 'lodash'
+
 module.exports = (robot) ->
-  api_url = 'https://publicapi.bcycle.com/api/1.0'
-  api_key = process.env.BCYCLE_API_KEY
-  program_id = process.env.BCYCLE_PROGRAM_ID
-  default_stations = process.env.BCYCLE_DEFAULT_STATIONS
+  config =
+    api_url: 'https://gbfs.bcycle.com'
+    city: process.env.BCYCLE_CITY || 'madison'
+    default_stations: process.env.BCYCLE_DEFAULT_STATIONS
 
   ##
   # Returns the status of the default stations, if any
   robot.respond /bcycle$/i, (msg) ->
-    return unless checkBCycleConfiguration msg
-
     # Process default stations
-    if default_stations != ''
-      default_stations = default_stations.toString().split(',')
+    if config.default_stations != ''
+      default_stations = config.default_stations.toString().split(',')
     else
       default_stations = []
 
@@ -42,141 +40,136 @@ module.exports = (robot) ->
       msg.send "Use `#{robot.name} bcycle search <query>` to find stations."
       return
 
-    response = makeBCycleRequest {
-        method: 'ListProgramKiosks',
-        id: program_id
-      }, (err, res, body) ->
+    # Get list of stations
+    makeBCycleRequest 'station_information', (err, res, body) ->
+      # Handle error conditions
+      return unless checkForError err, res, body, msg
+
+      # Parse list of stations
+      apiResponseInformation = JSON.parse(body)
+
+      # Get station status
+      makeBCycleRequest 'station_status', (err, res, body) ->
         # Handle error conditions
         return unless checkForError err, res, body, msg
 
-        # Parse list of Stations
-        stations = JSON.parse(body)
+        # Parse station statuses
+        apiResponseStatus = JSON.parse(body)
+
+        # Merge the lists
+        mergedList = _(apiResponseInformation.data.stations)
+          .concat(apiResponseStatus.data.stations)
+          .groupBy('station_id')
+          .map(_.spread(_.assign))
+          .value()
 
         # Print station data
-        for station in stations
-          continue unless station.Id.toString() in default_stations
+        for station in mergedList
+          continue unless formatStationId(station) in default_stations
           printStationStatus station, msg
 
   ##
   # Get a listing of stations in the configured program
   robot.respond /bcycle list$/i, (msg) ->
-    return unless checkBCycleConfiguration msg
+    makeBCycleRequest 'station_information', (err, res, body) ->
+      # Handle error conditions
+      return unless checkForError err, res, body, msg
 
-    response = makeBCycleRequest {
-        method: 'ListProgramKiosks',
-        id: program_id
-      }, (err, res, body) ->
-        # Handle error conditions
-        return unless checkForError err, res, body, msg
+      # Parse list of Stations
+      apiResponse = JSON.parse(body)
 
-        # Parse list of Stations
-        stations = JSON.parse(body)
-
-        # Print station data
-        for station in stations
-          msg.send formatStationName station
+      # Print station data
+      for station in apiResponse.data.stations
+        msg.send formatStationName station
 
   ##
   # Returns the status for a given station ID
   robot.respond /bcycle me \#?([0-9]+)$/i, (msg) ->
-    return unless checkBCycleConfiguration msg
-
     query = msg.match[1]
 
-    response = makeBCycleRequest {
-        method: 'ListProgramKiosks',
-        id: program_id
-      }, (err, res, body) ->
+    makeBCycleRequest 'station_information', (err, res, body) ->
+      # Handle error conditions
+      return unless checkForError err, res, body, msg
+
+      # Parse list of Stations
+      apiResponseInformation = JSON.parse(body)
+
+      # Get station status
+      makeBCycleRequest 'station_status', (err, res, body) ->
         # Handle error conditions
         return unless checkForError err, res, body, msg
 
-        # Parse list of Stations
-        stations = JSON.parse(body)
+        # Parse station statuses
+        apiResponseStatus = JSON.parse(body)
+
+        # Merge the lists
+        mergedList = _(apiResponseInformation.data.stations)
+          .concat(apiResponseStatus.data.stations)
+          .groupBy('station_id')
+          .map(_.spread(_.assign))
+          .value()
 
         # Print station data
-        for station in stations
-          continue if station.Id.toString() != query
+        for station in mergedList
+          continue if formatStationId(station) != query
           printStationStatus station, msg
 
   ##
   # Searches the listing of stations and returns status
   robot.respond /bcycle search (.*)$/i, (msg) ->
-    return unless checkBCycleConfiguration msg
-
     query = msg.match[1].toLowerCase()
     station_matches = []
 
-    response = makeBCycleRequest {
-        method: 'ListProgramKiosks',
-        id: program_id
-      }, (err, res, body) ->
-        return unless checkForError err, res, body, msg
+    makeBCycleRequest 'station_information', (err, res, body) ->
+      return unless checkForError err, res, body, msg
 
-        # Parse list of Stations
-        stations = JSON.parse(body)
+      # Parse list of Stations
+      apiResponse = JSON.parse(body)
 
-        # Find matches
-        for station in stations
-          if ~station.Name.toLowerCase().indexOf query
-            station_matches.push station
+      # Find matches
+      for station in apiResponse.data.stations
+        if ~station.name.toLowerCase().indexOf query
+          station_matches.push station
 
-        # No matches
-        if station_matches.length == 0
-          return msg.send "No stations matched your query: #{query}"
+      # No matches
+      if station_matches.length == 0
+        return msg.send "No stations matched your query: #{query}"
 
-        # Print station data
-        for station in station_matches
-          msg.send formatStationName station
+      # Print station data
+      for station in station_matches
+        msg.send formatStationName station
 
   ##
-  # Get a list of programs
-  robot.respond /bcycle programs$/i, (msg) ->
-    response = makeBCycleRequest {
-        method: 'ListPrograms',
-        id: ''
-      }, (err, res, body) ->
-        return unless checkForError err, res, body, msg
-
-        # Parse list of Stations
-        programs = JSON.parse(body)
-
-        for program in programs
-          msg.send "#{program.ProgramId} - #{program.Name}"
-
-  ##
-  # Make B-cycle Request
-  makeBCycleRequest = (options, callback) ->
-    robot.http("#{api_url}/#{options.method}/#{options.id}")
-      .header('ApiKey', api_key)
+  # Make BCycle Request
+  makeBCycleRequest = (feed, callback) ->
+    robot.http("#{config.api_url}/bcycle_#{config.city}/#{feed}.json")
       .get() (err, res, body) ->
         callback(err, res, body)
 
   ##
   # Check for Error
   checkForError = (err, res, body, msg) ->
-      unless res.statusCode == 200
-        msg.send "#{res.statusCode}: #{body}"
-        return false
-      true
+    if err
+      msg.send err.message
+      return false
+    if res.statusCode != 200
+      msg.send "#{res.statusCode}: #{body}"
+      return false
+    true
 
   ##
   # Print Station Status
   printStationStatus = (station, msg) ->
     msg.send formatStationName station
-    msg.send "> #{station.Status}: Bikes: #{station.BikesAvailable} | Docks: #{station.DocksAvailable} | Total: #{station.TotalDocks}"
+    status = if station.is_renting == 1 then 'Active' else 'Inactive'
+    msg.send "> #{status} | Bikes: #{station.num_bikes_available} | Docks: #{station.num_docks_available}"
+
+  ##
+  # Format Station ID
+  formatStationId = (station) ->
+    return station.station_id.replace("bcycle_#{config.city}_", '')
 
   ##
   # Format Station Name
   formatStationName = (station) ->
-    if station.PublicText
-      return "##{station.Id} - #{station.Name} (#{station.PublicText})"
-    else
-      return "##{station.Id} - #{station.Name}"
-
-  ##
-  # Check B-cycle Configuration
-  checkBCycleConfiguration = (msg) ->
-    unless api_key && program_id
-      msg.send "You are missing the BCYCLE_API_KEY and/or BCYCLE_PROGRAM_ID configuration variables."
-      return false
-    true
+    return "##{formatStationId(station)} - #{station.name}"

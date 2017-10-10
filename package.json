@@ -1,6 +1,6 @@
 {
   "name": "hubot-bcycle-finder",
-  "description": "Get the status of nearby B-cycle stations",
+  "description": "Get the status of nearby BCycle stations",
   "version": "1.0.1",
   "author": "stephenyeargin",
   "license": "MIT",
@@ -42,5 +42,8 @@
     "test": "grunt test",
     "precommit": "npm test",
     "prepush": "npm test"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4"
   }
 }
