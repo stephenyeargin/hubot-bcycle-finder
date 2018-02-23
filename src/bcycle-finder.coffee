@@ -190,6 +190,7 @@ module.exports = (robot) ->
     status = if station.is_renting == 1 then 'Active' else 'Inactive'
     stationName = formatStationName station
     stationColor = if station.is_renting == 1 then 'good' else 'danger'
+    stationMapLink = 'https://maps.google.com/?q=' + encodeURIComponent("#{station.address}, #{config.city}")
 
     switch robot.adapterName
       when 'slack'
@@ -197,14 +198,13 @@ module.exports = (robot) ->
           fallback: "#{stationName} > #{status} | Bikes: #{station.num_bikes_available} | Docks: #{station.num_docks_available}",
           title: stationName,
           color: stationColor,
-          thumb_url: 'https://github.com/bcycle.png',
           author_name: 'BCycle',
           author_link: "https://#{config.city}.bcycle.com/",
           author_icon: "https://github.com/bcycle.png",
           fields: [
             {
               title: "Address",
-              value: station.address,
+              value: ":world_map: <#{stationMapLink}|#{station.address}>",
               short: false
             }
             {
