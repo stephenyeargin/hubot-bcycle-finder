@@ -42,10 +42,7 @@ describe 'hubot-bcycle-finder', ->
         try
           expect(selfRoom.messages).to.eql [
             ['alice', '@hubot bcycle']
-            ['hubot', '#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave']
-            ['hubot', '> Active | Bikes: 4 | Docks: 7']
-            ['hubot', '#2974 - Shelby Bottoms Nature Center: 1900 Davidson St']
-            ['hubot', '> Active | Bikes: 10 | Docks: 11']
+            ['hubot', "#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave\n> Active | Bikes: 4 | Docks: 7\n#2974 - Shelby Bottoms Nature Center: 1900 Davidson St\n> Active | Bikes: 10 | Docks: 11"]
           ]
           done()
         catch err
@@ -138,8 +135,7 @@ describe 'hubot-bcycle-finder', ->
         try
           expect(selfRoom.messages).to.eql [
             ['alice', '@hubot bcycle me 2970']
-            ['hubot', '#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave']
-            ['hubot', '> Active | Bikes: 4 | Docks: 7']
+            ['hubot', "#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave\n> Active | Bikes: 4 | Docks: 7"]
           ]
           done()
         catch err

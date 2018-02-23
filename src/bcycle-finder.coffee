@@ -64,10 +64,18 @@ module.exports = (robot) ->
           .map(_.spread(_.assign))
           .value()
 
-        # Print station data
-        for station in mergedList
-          continue unless formatStationId(station) in default_stations
-          printStationStatus station, msg
+        # Return station data
+        output = _.chain(mergedList)
+          .filter( (station) ->
+            return formatStationId(station) in default_stations
+          )
+          .map( (station) ->
+            return formatStationStatus(station)
+          )
+          .value()
+
+        # Send output
+        sendMessage output, msg
 
   ##
   # Get a listing of stations in the configured program
@@ -110,10 +118,17 @@ module.exports = (robot) ->
           .map(_.spread(_.assign))
           .value()
 
-        # Print station data
-        for station in mergedList
-          continue if formatStationId(station) != query
-          printStationStatus station, msg
+        output = _.chain(mergedList)
+          .filter( (station) ->
+            return formatStationId(station) == query
+          )
+          .map( (station) ->
+            return formatStationStatus(station)
+          )
+          .value()
+  
+        # Send output
+        sendMessage output, msg
 
   ##
   # Searches the listing of stations and returns status
@@ -171,10 +186,44 @@ module.exports = (robot) ->
 
   ##
   # Print Station Status
-  printStationStatus = (station, msg) ->
-    msg.send formatStationName station
+  formatStationStatus = (station) ->
     status = if station.is_renting == 1 then 'Active' else 'Inactive'
-    msg.send "> #{status} | Bikes: #{station.num_bikes_available} | Docks: #{station.num_docks_available}"
+    stationName = formatStationName station
+    stationColor = if station.is_renting == 1 then 'good' else 'danger'
+    stationMapLink = 'https://maps.google.com/?q=' + encodeURIComponent("#{station.address}, #{config.city}")
+
+    switch robot.adapterName
+      when 'slack'
+        payload = {
+          fallback: "#{stationName} > #{status} | Bikes: #{station.num_bikes_available} | Docks: #{station.num_docks_available}",
+          title: stationName,
+          color: stationColor,
+          author_name: 'BCycle',
+          author_link: "https://#{config.city}.bcycle.com/",
+          author_icon: "https://github.com/bcycle.png",
+          fields: [
+            {
+              title: "Address",
+              value: "<#{stationMapLink}|#{station.address}>",
+              short: false
+            }
+            {
+              title: "Bikes Available",
+              value: station.num_bikes_available,
+              short: true
+            },
+            {
+              title: "Docks Open",
+              value: station.num_docks_available,
+              short: true
+            }
+          ],
+          ts: station.last_reported
+        }
+      else
+        payload = "#{stationName}\n> #{status} | Bikes: #{station.num_bikes_available} | Docks: #{station.num_docks_available}"
+    # Return payload
+    return payload
 
   ##
   # Format Station ID
@@ -185,3 +234,14 @@ module.exports = (robot) ->
   # Format Station Name
   formatStationName = (station) ->
     return "##{formatStationId(station)} - #{station.name}"
+    
+  ##
+  # Send message
+  sendMessage = (payload, msg) ->
+    switch robot.adapterName
+      when 'slack'
+        msg.send {
+          attachments: payload
+        }
+      else
+        msg.send payload.join("\n")
