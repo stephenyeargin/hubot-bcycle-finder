@@ -204,7 +204,7 @@ module.exports = (robot) ->
           fields: [
             {
               title: "Address",
-              value: ":world_map: <#{stationMapLink}|#{station.address}>",
+              value: "<#{stationMapLink}|#{station.address}>",
               short: false
             }
             {
