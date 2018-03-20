@@ -164,7 +164,37 @@ module.exports = (robot) ->
       # Parse system information
       response = JSON.parse(body)
       
-      msg.send "#{response.data.name} | #{response.data.url} | #{response.data.phone_number} | #{response.data.email}"
+      switch robot.adapterName
+        when 'slack'
+          msg.send {
+            attachments: [
+              {
+                fallback: "#{response.data.name} | #{response.data.url} | #{response.data.phone_number} | #{response.data.email}",
+                title: response.data.name,
+                title_link: "https://#{config.city}.bcycle.com/",
+                thumb_url: "https://github.com/bcycle.png",
+                fields: [
+                  {
+                    title: "Website",
+                    value: "<#{response.data.url}|#{response.data.url}>",
+                    short: true
+                  },
+                  {
+                    title: "Phone Number",
+                    value: response.data.phone_number,
+                    short: true
+                  },
+                  {
+                    title: "Email",
+                    value: "<mailto:#{response.data.email}|#{response.data.email}}>",
+                    short: true
+                  }
+                ]
+              }
+            ]
+          }
+        else
+          msg.send "#{response.data.name} | #{response.data.url} | #{response.data.phone_number} | #{response.data.email}"
 
   ##
   # Make BCycle Request
@@ -233,7 +263,11 @@ module.exports = (robot) ->
   ##
   # Format Station Name
   formatStationName = (station) ->
-    return "##{formatStationId(station)} - #{station.name}"
+        switch robot.adapterName
+          when 'slack'
+            return "**##{formatStationId(station)}** - #{station.name}"
+          else
+            return "##{formatStationId(station)} - #{station.name}"
     
   ##
   # Send message
