@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder.png)](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder)
 
-Get the status of nearby BCycle stations
+Get the status of nearby BCycle stations.
 
 ## Installation
 
@@ -18,29 +18,16 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 
 ### Configuration
 
-The script has two environment variables.
+| Environment Variables | Required? | Description                              |
+| --------------------- | :-------: | ---------------------------------------- |
+| `BCYCLE_CITY`         | Yes       | Lowercase, city code for BCycle program  |
+| `BCYCLE_DEFAULT_STATIONS` | Yes   | Comma separated list of stations         |
 
-- `BCYCLE_CITY` is the name of the BCycle city.
-- `BCYCLE_DEFAULT_STATIONS` is a comma separated list of integers of your preferred stations
- - You can retrieve the station IDs by using `hubot bcycle search <some query>` 
-
-### Heroku
-
-```bash
-heroku config:set BCYCLE_CITY=nashville
-heroku config:set BCYCLE_DEFAULT_STATIONS=2171,2173
-```
-
-### Standard
-
-```
-export BCYCLE_CITY=nashville
-export BCYCLE_DEFAULT_STATIONS=2171,2173
-```
+NOTE: You can retrieve the station IDs by using `hubot bcycle search <query>` 
 
 ## Usage
 
-### `hubot bcycle`
+### Default stations
 
 Returns the status of the default stations, if any.
 
@@ -52,9 +39,9 @@ hubot> #2173 - Frist Center: 9th Ave S & Demonbreun St
 hubot> > Active | Bikes: 6 | Docks: 5 | Total: 11
 ```
 
-### `hubot bcycle list`
+### List stations
 
-Get a listing of stations in the configured program. _Note: This will likely flood your chat room. Consider using `hubot bcycle search` instead._
+_Note: This will likely flood your chat room. Consider using `hubot bcycle search` instead._
 
 ```
 user> hubot bcycle list
@@ -75,9 +62,7 @@ hubot> #2177 - 5 Points East Nashville: S 11th St
 [...]
 ```
 
-### `hubot bcycle me <station id>`
-
-Returns the status for a given station ID.
+### Get status of a station
 
 ```
 user> hubot bcycle me 2162
@@ -85,18 +70,14 @@ hubot> #2162 - The District: Commerce & 2nd Ave N
 hubot> > Active: Bikes: 7 | Docks: 4 | Total: 11
 ```
 
-### `hubot bcycle search <query>`
-
-Searches the listing of stations and returns matching names.
+### Search station names
 
 ```
 user> hubot bcycle search cumberland
 hubot> #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
 ```
 
-### `hubot bcycle info`
-
-Returns information about your city's program.
+### Get program information
 
 ```
 user> hubot bcycle info

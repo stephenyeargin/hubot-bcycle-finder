@@ -1,8 +1,5 @@
-# Description:
+# Description
 #   Get the status of nearby BCycle stations
-#
-# Dependencies:
-#   None
 #
 # Configuration:
 #   BCYCLE_CITY - name of the BCycle city, defaults to Madison
