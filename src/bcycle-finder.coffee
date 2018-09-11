@@ -123,7 +123,7 @@ module.exports = (robot) ->
             return formatStationStatus(station)
           )
           .value()
-  
+
         # Send output
         sendMessage output, msg
 
@@ -157,10 +157,10 @@ module.exports = (robot) ->
   robot.respond /bcycle info$/i, (msg) ->
     makeBCycleRequest 'system_information', (err, res, body) ->
       return unless checkForError err, res, body, msg
-    
+
       # Parse system information
       response = JSON.parse(body)
-      
+
       switch robot.adapterName
         when 'slack'
           msg.send {
@@ -260,12 +260,8 @@ module.exports = (robot) ->
   ##
   # Format Station Name
   formatStationName = (station) ->
-        switch robot.adapterName
-          when 'slack'
-            return "**##{formatStationId(station)}** - #{station.name}"
-          else
-            return "##{formatStationId(station)} - #{station.name}"
-    
+    return "##{formatStationId(station)} - #{station.name}"
+
   ##
   # Send message
   sendMessage = (payload, msg) ->
