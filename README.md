@@ -1,6 +1,6 @@
 # Hubot BCycle Finder
 
-[![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder.png)](https://travis-ci.org/stephenyeargin/hubot-bcycle-finder)
+[![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://app.travis-ci.com/stephenyeargin/hubot-bcycle-finder.png)](https://app.travis-ci.com/stephenyeargin/hubot-bcycle-finder)
 
 Get the status of nearby BCycle stations.
 
