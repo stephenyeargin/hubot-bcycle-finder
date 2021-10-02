@@ -14,6 +14,9 @@ describe 'hubot-bcycle-finder', ->
       .get('/bcycle_nashville/system_information.json')
       .replyWithFile(200, __dirname + '/fixtures/system_information.json')
     nock('https://gbfs.bcycle.com')
+      .get('/bcycle_nashville/system_pricing_plans.json')
+      .replyWithFile(200, __dirname + '/fixtures/system_pricing_plans.json')
+    nock('https://gbfs.bcycle.com')
       .get('/bcycle_nashville/station_information.json')
       .replyWithFile(200, __dirname + '/fixtures/station_information.json')
     nock('https://gbfs.bcycle.com')
@@ -27,7 +30,7 @@ describe 'hubot-bcycle-finder', ->
   context 'default stations tests', ->
     beforeEach ->
       process.env.BCYCLE_CITY = 'nashville'
-      process.env.BCYCLE_DEFAULT_STATIONS='2970,2974'
+      process.env.BCYCLE_DEFAULT_STATIONS='2162,2165'
       @room = helper.createRoom()
 
     afterEach ->
@@ -42,7 +45,7 @@ describe 'hubot-bcycle-finder', ->
         try
           expect(selfRoom.messages).to.eql [
             ['alice', '@hubot bcycle']
-            ['hubot', "#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave\n> Active | Bikes: 4 | Docks: 7\n#2974 - Shelby Bottoms Nature Center: 1900 Davidson St\n> Active | Bikes: 10 | Docks: 11"]
+            ['hubot', "#2162 - Commerce & 2nd Ave N\n> Active | Bikes: 12 | Docks: 3\n#2165 - Church St between 4th & 5th Ave N\n> Active | Bikes: 1 | Docks: 8"]
           ]
           done()
         catch err
@@ -84,41 +87,27 @@ describe 'hubot-bcycle-finder', ->
         try
           expect(selfRoom.messages).to.eql [
             ['alice', '@hubot bcycle list']
-            ['hubot', '#2162 - The District: Commerce & 2nd Ave N']
-            ['hubot', '#2165 - Fifth Third Plaza: Church St between 4th & 5th Ave N']
-            ['hubot', '#2166 - Public Square: 3rd Ave N & Union St']
-            ['hubot', '#2167 - Riverfront Station: Broadway & 1st Ave N']
-            ['hubot', '#2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge']
-            ['hubot', '#2169 - TPAC: 6th Ave N & Union St']
-            ['hubot', '#2170 - The Gulch: 11th Ave S & Pine St']
-            ['hubot', '#2171 - Music Row Roundabout: 16th Ave S']
-            ['hubot', '#2172 - Centennial Park: 27th Ave N']
-            ['hubot', '#2173 - Frist Center: 9th Ave S & Demonbreun St']
-            ['hubot', '#2175 - Hillsboro Village: Wedgewood Ave & 21st Ave S']
-            ['hubot', '#2176 - Trolley Barns: Peabody St']
-            ['hubot', '#2177 - 5 Points East Nashville: S 11th St']
-            ['hubot', '#2179 - Nashville Farmers\' Market: 7th Ave N / Outdoor Food Court']
-            ['hubot', '#2180 - Germantown: NW 5th Ave & Monroe St']
-            ['hubot', '#2181 - SoBro: 3rd Ave S & Symphony Pl']
-            ['hubot', '#2315 - Downtown YMCA: Church St & 9th Ave N']
-            ['hubot', '#2516 - 12 South Flats: 12th Ave S & Elmwood']
-            ['hubot', '#2517 - Sevier Park: Kirkwood Ave & 12th Ave S']
-            ['hubot', '#2684 - Saint Thomas Midtown: Church St. and 20th Ave N']
-            ['hubot', '#2724 - McCabe Community Center: 103 46th Ave N']
-            ['hubot', '#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave']
-            ['hubot', '#2971 - Morgan Park: Magdeburg Greenway & 4th Ave N']
-            ['hubot', '#2973 - Belmont Boulevard: 2101 Belmont Blvd']
-            ['hubot', '#2974 - Shelby Bottoms Nature Center: 1900 Davidson St']
-            ['hubot', '#2975 - First Tennessee Park: Junior Gilliam Way & 5th Ave N']
-            ['hubot', '#3260 - Walk of Fame Park: 5th Ave S  & Demonbreun St.']
-            ['hubot', '#3271 - J. Percy Priest Dam Trailhead: Stones River Greenway off Bell Rd']
-            ['hubot', '#3315 - Two Rivers Skatepark: Two Rivers Greenway']
-            ['hubot', '#3349 - Hadley Park Community Center: 1037 28th Ave North']
-            ['hubot', '#3456 - 40th Ave. N and Charlotte Ave. ']
-            ['hubot', '#3467 - Charlotte Ave and 46th Ave N ']
+            ['hubot', '#2162 - Commerce & 2nd Ave N']
+            ['hubot', '#2165 - Church St between 4th & 5th Ave N']
+            ['hubot', '#2166 - Public Square : 3rd Ave N & Union St']
+            ['hubot', '#2168 - Cumberland Park']
+            ['hubot', '#2169 - 6th Ave N & Union St']
+            ['hubot', '#2170 - The Gulch : 11th Ave S & Pine St']
+            ['hubot', '#2171 - Music Row Roundabout : 16th Ave S']
+            ['hubot', '#2173 - 9th Ave S & Demonbreun St']
+            ['hubot', '#2175 - Wedgewood Ave & 21st Ave S']
+            ['hubot', '#2176 - 57 Peabody St']
+            ['hubot', '#2177 - 5 Points East Nashville : S 11th St']
+            ['hubot', '#2179 - Nashville Farmers\' Market']
+            ['hubot', '#2180 - Germantown: 5th Ave & Monroe St']
+            ['hubot', '#2181 - 3rd Ave S & Symphony Pl']
+            ['hubot', '#2516 - 12th Ave S & Elmwood']
+            ['hubot', '#2684 - Church St. and 20th Ave N']
+            ['hubot', '#2973 - 2017 Belmont Blvd']
+            ['hubot', '#2975 - Junior Gilliam Way & 5th Ave N']
+            ['hubot', '#3456 - 40th Ave. N and Charlotte Ave.']
+            ['hubot', '#3467 - Charlotte Ave and 46th Ave N']
             ['hubot', '#3568 - 200 21st Ave South']
-            ['hubot', '#3569 - Parthenon ']
-            ['hubot', '#3597 - Ted Rhodes Golf Course: 1901 Ed Temple Blvd']
             ['hubot', '#3613 - 715 Porter Road']
           ]
           done()
@@ -130,12 +119,12 @@ describe 'hubot-bcycle-finder', ->
     # hubot bcycle me <station id>
     it 'returns the status for a given station', (done) ->
       selfRoom = @room
-      selfRoom.user.say('alice', '@hubot bcycle me 2970')
+      selfRoom.user.say('alice', '@hubot bcycle me 2162')
       setTimeout(() ->
         try
           expect(selfRoom.messages).to.eql [
-            ['alice', '@hubot bcycle me 2970']
-            ['hubot', "#2970 - Hill Center Trailhead: Richland Creek Greenway & N Kenner Ave\n> Active | Bikes: 4 | Docks: 7"]
+            ['alice', '@hubot bcycle me 2162']
+            ['hubot', '#2162 - Commerce & 2nd Ave N\n> Active | Bikes: 12 | Docks: 3']
           ]
           done()
         catch err
@@ -146,12 +135,13 @@ describe 'hubot-bcycle-finder', ->
     # hubot bcycle search <query>
     it 'searches the listing of stations', (done) ->
       selfRoom = @room
-      selfRoom.user.say('alice', '@hubot bcycle search broadway')
+      selfRoom.user.say('alice', '@hubot bcycle search church st')
       setTimeout(() ->
         try
           expect(selfRoom.messages).to.eql [
-            ['alice', '@hubot bcycle search broadway']
-            ['hubot', '#2167 - Riverfront Station: Broadway & 1st Ave N']
+            ['alice', '@hubot bcycle search church st']
+            ['hubot', '#2165 - Church St between 4th & 5th Ave N']
+            ['hubot', '#2684 - Church St. and 20th Ave N']
           ]
           done()
         catch err
@@ -167,7 +157,23 @@ describe 'hubot-bcycle-finder', ->
         try
           expect(selfRoom.messages).to.eql [
             ['alice', '@hubot bcycle info']
-            ['hubot', 'Nashville BCycle | https://nashville.bcycle.com | (615) 625-2153 | emagas@nashvilledowntown.com']
+            ['hubot', 'Nashville BCycle | https://nashville.bcycle.com | 844-982-4533 | Nashville@bcycle.com']
+          ]
+          done()
+        catch err
+          done err
+        return
+      , 1000)
+
+    # hubot bcycle price
+    it 'returns pricing plan information', (done) ->
+      selfRoom = @room
+      selfRoom.user.say('alice', '@hubot bcycle price')
+      setTimeout(() ->
+        try
+          expect(selfRoom.messages).to.eql [
+            ['alice', '@hubot bcycle price']
+            ['hubot',  "Single Ride Pass Online ($5) - $5 per 30 minutes. Total minutes calculated and billed the following day.\nGuest Pass ($25) - Unlimited 120-minute rides in a 3-Day period. Additional rental fee of $3 per 30 minutes for rides longer than 120 minutes.\nMonthly Pass ($20) - Enjoy unlimited 60-minute rides for 30 days! Rides longer than 60 minutes are subject to a usage fee of $3 per additional 30 minutes.\nAnnual Pass ($120) - Enjoy unlimited 120-minute rides for a year! *Limited time offer of 120-minutes.* Rides longer than 120 minutes are subject to a usage fee of $3 per additional 30 minutes.\nSingle Ride Pass  ($5) - $5 per 30 minutes. Total minutes calculated and billed the following day."]
           ]
           done()
         catch err

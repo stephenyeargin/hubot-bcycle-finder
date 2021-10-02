@@ -83,3 +83,14 @@ hubot> #2168 - Cumberland Park: Victory Way at Base of Pedestrian St Bridge
 user> hubot bcycle info
 hubot> Nashville BCycle | https://nashville.bcycle.com | (615) 625-2153 | emagas@nashvilledowntown.com
 ```
+
+### Get pricing plans
+
+```
+user> hubot bcycle price
+hubot> Single Ride Pass Online ($5) - $5 per 30 minutes. Total minutes calculated and billed the following day.
+Guest Pass ($25) - Unlimited 120-minute rides in a 3-Day period. Additional rental fee of $3 per 30 minutes for rides longer than 120 minutes.
+Monthly Pass ($20) - Enjoy unlimited 60-minute rides for 30 days! Rides longer than 60 minutes are subject to a usage fee of $3 per additional 30 minutes.
+Annual Pass ($120) - Enjoy unlimited 120-minute rides for a year! *Limited time offer of 120-minutes.* Rides longer than 120 minutes are subject to a usage fee of $3 per additional 30 minutes.
+Single Ride Pass  ($5) - $5 per 30 minutes. Total minutes calculated and billed the following day.
+```
