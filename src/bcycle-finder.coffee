@@ -11,6 +11,7 @@
 #   hubot bcycle me <station id> - Returns the status for a given station ID
 #   hubot bcycle search <query> - Searches the listing of stations
 #   hubot bcycle info - Contact information for your program
+#   hubot bcycle price - List the available pricing plans
 #
 # Author:
 #   stephenyeargin
@@ -183,7 +184,7 @@ module.exports = (robot) ->
                   },
                   {
                     title: "Email",
-                    value: "<mailto:#{response.data.email}|#{response.data.email}}>",
+                    value: "<mailto:#{response.data.email}|#{response.data.email}>",
                     short: true
                   }
                 ]
@@ -192,6 +193,19 @@ module.exports = (robot) ->
           }
         else
           msg.send "#{response.data.name} | #{response.data.url} | #{response.data.phone_number} | #{response.data.email}"
+
+  ##
+  # Show Pricing Plans for Program
+  robot.respond /bcycle (price|prices|pricing|plan|plans)$/i, (msg) ->
+    makeBCycleRequest 'system_pricing_plans', (err, res, body) ->
+      return unless checkForError err, res, body, msg
+      response = JSON.parse(body)
+
+      output = []
+      for plan in response.data.plans
+        output.push(formatPricingPlan plan)
+
+      sendMessage output, msg
 
   ##
   # Make BCycle Request
@@ -217,7 +231,7 @@ module.exports = (robot) ->
     status = if station.is_renting == 1 then 'Active' else 'Inactive'
     stationName = formatStationName station
     stationColor = if station.is_renting == 1 then 'good' else 'danger'
-    stationMapLink = 'https://maps.google.com/?q=' + encodeURIComponent("#{station.address}, #{config.city}")
+    stationMapLink = "https://www.google.com/maps/place/#{station.lat},#{station.lon}"
 
     switch robot.adapterName
       when 'slack'
@@ -260,7 +274,22 @@ module.exports = (robot) ->
   ##
   # Format Station Name
   formatStationName = (station) ->
-    return "##{formatStationId(station)} - #{station.name}"
+    return "##{formatStationId(station)} - #{station.name.trim()}"
+
+  ##
+  # Format Pricing Plan
+  formatPricingPlan = (plan) ->
+    switch robot.adapterName
+      when 'slack'
+        payload = {
+          fallback: "#{plan.name} ($#{plan.price}) - #{plan.description}"
+          title: "#{plan.name} ($#{plan.price})"
+          text: plan.description
+        }
+      else
+        payload = "#{plan.name} ($#{plan.price}) - #{plan.description}"
+    # Return payload
+    return payload
 
   ##
   # Send message
