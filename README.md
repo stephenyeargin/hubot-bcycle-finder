@@ -1,6 +1,6 @@
 # Hubot BCycle Finder
 
-[![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Build Status](https://app.travis-ci.com/stephenyeargin/hubot-bcycle-finder.png)](https://app.travis-ci.com/stephenyeargin/hubot-bcycle-finder)
+[![npm version](https://badge.fury.io/js/hubot-bcycle-finder.svg)](http://badge.fury.io/js/hubot-bcycle-finder) [![Node CI](https://github.com/stephenyeargin/hubot-bcycle-finder/actions/workflows/nodejs.yml/badge.svg)](https://github.com/stephenyeargin/hubot-bcycle-finder/actions/workflows/nodejs.yml)
 
 Get the status of nearby BCycle stations.
 
@@ -23,7 +23,7 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 | `BCYCLE_CITY`         | Yes       | Lowercase, city code for BCycle program  |
 | `BCYCLE_DEFAULT_STATIONS` | Yes   | Comma separated list of stations         |
 
-NOTE: You can retrieve the station IDs by using `hubot bcycle search <query>` 
+NOTE: You can retrieve the station IDs by using `hubot bcycle search <query>`
 
 ## Usage
 
