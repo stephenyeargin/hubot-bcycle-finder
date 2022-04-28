@@ -79,7 +79,7 @@ module.exports = (robot) ->
 
   ##
   # Get a listing of stations in the configured program
-  robot.respond /bcycle list$/i, (msg) ->
+  robot.respond /bcycle (?:list|stations)$/i, (msg) ->
     return unless checkConfiguration(msg)
 
     makeBCycleRequest 'station_information', (err, res, body) ->
@@ -95,7 +95,7 @@ module.exports = (robot) ->
 
   ##
   # Returns the status for a given station ID
-  robot.respond /bcycle me \#?([0-9]+)$/i, (msg) ->
+  robot.respond /bcycle (?:me|station) \#?([0-9]+)$/i, (msg) ->
     return unless checkConfiguration(msg)
 
     query = msg.match[1]
@@ -206,7 +206,7 @@ module.exports = (robot) ->
 
   ##
   # Show Pricing Plans for Program
-  robot.respond /bcycle (price|prices|pricing|plan|plans)$/i, (msg) ->
+  robot.respond /bcycle (?:price|prices|pricing|plan|plans)$/i, (msg) ->
     return unless checkConfiguration(msg)
 
     makeBCycleRequest 'system_pricing_plans', (err, res, body) ->
