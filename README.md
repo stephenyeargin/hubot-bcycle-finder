@@ -21,7 +21,7 @@ Then add **hubot-bcycle-finder** to your `external-scripts.json`:
 | Environment Variables | Required? | Description                              |
 | --------------------- | :-------: | ---------------------------------------- |
 | `BCYCLE_CITY`         | Yes       | Lowercase, city code for BCycle program  |
-| `BCYCLE_DEFAULT_STATIONS` | Yes   | Comma separated list of stations         |
+| `BCYCLE_DEFAULT_STATIONS` | No    | Comma separated list of stations         |
 
 NOTE: You can retrieve the station IDs by using `hubot bcycle search <query>`
 

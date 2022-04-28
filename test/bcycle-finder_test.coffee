@@ -180,3 +180,30 @@ describe 'hubot-bcycle-finder', ->
           done err
         return
       , 1000)
+
+  # missing configuration error
+  context 'missing configuration', ->
+    beforeEach ->
+      delete process.env.BCYCLE_CITY
+      delete process.env.BCYCLE_DEFAULT_STATIONS
+      @room = helper.createRoom()
+
+    afterEach ->
+      @room.destroy()
+      delete process.env.BCYCLE_CITY
+      delete process.env.BCYCLE_DEFAULT_STATIONS
+
+    it 'returns an error message', (done) ->
+      selfRoom = @room
+      selfRoom.user.say('alice', '@hubot bcycle')
+      setTimeout(() ->
+        try
+          expect(selfRoom.messages).to.eql [
+            ['alice', '@hubot bcycle']
+            ['hubot', "You must configure BCYCLE_CITY before use."]
+          ]
+          done()
+        catch err
+          done err
+        return
+      , 1000)

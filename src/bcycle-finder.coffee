@@ -21,12 +21,14 @@ _ = require 'lodash'
 module.exports = (robot) ->
   config =
     api_url: 'https://gbfs.bcycle.com'
-    city: process.env.BCYCLE_CITY || 'madison'
+    city: process.env.BCYCLE_CITY
     default_stations: process.env.BCYCLE_DEFAULT_STATIONS || ''
 
   ##
   # Returns the status of the default stations, if any
   robot.respond /bcycle$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     # Process default stations
     if config.default_stations != ''
       default_stations = config.default_stations.split(',')
@@ -78,6 +80,8 @@ module.exports = (robot) ->
   ##
   # Get a listing of stations in the configured program
   robot.respond /bcycle list$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     makeBCycleRequest 'station_information', (err, res, body) ->
       # Handle error conditions
       return unless checkForError err, res, body, msg
@@ -92,6 +96,8 @@ module.exports = (robot) ->
   ##
   # Returns the status for a given station ID
   robot.respond /bcycle me \#?([0-9]+)$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     query = msg.match[1]
 
     makeBCycleRequest 'station_information', (err, res, body) ->
@@ -131,6 +137,8 @@ module.exports = (robot) ->
   ##
   # Searches the listing of stations and returns status
   robot.respond /bcycle search (.*)$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     query = msg.match[1].toLowerCase()
     station_matches = []
 
@@ -156,6 +164,8 @@ module.exports = (robot) ->
   ##
   # Returns contact information for program
   robot.respond /bcycle info$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     makeBCycleRequest 'system_information', (err, res, body) ->
       return unless checkForError err, res, body, msg
 
@@ -197,6 +207,8 @@ module.exports = (robot) ->
   ##
   # Show Pricing Plans for Program
   robot.respond /bcycle (price|prices|pricing|plan|plans)$/i, (msg) ->
+    return unless checkConfiguration(msg)
+
     makeBCycleRequest 'system_pricing_plans', (err, res, body) ->
       return unless checkForError err, res, body, msg
       response = JSON.parse(body)
@@ -213,6 +225,14 @@ module.exports = (robot) ->
     robot.http("#{config.api_url}/bcycle_#{config.city}/#{feed}.json")
       .get() (err, res, body) ->
         callback(err, res, body)
+
+  ##
+  # Check Configuration
+  checkConfiguration = (msg) ->
+    unless config.city
+      msg.send "You must configure BCYCLE_CITY before use."
+      return
+    true
 
   ##
   # Check for Error
