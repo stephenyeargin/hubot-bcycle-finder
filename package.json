@@ -18,9 +18,7 @@
   "bugs": {
     "url": "https://github.com/stephenyeargin/hubot-bcycle-finder/issues"
   },
-  "dependencies": {
-    "lodash": "^4.17.21"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "hubot": "^3 || ^4"
   },
