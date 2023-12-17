@@ -40,7 +40,6 @@
     "prepare": "husky install"
   },
   "volta": {
-    "node": "16.20.0",
-    "npm": "8.19.4"
+    "node": "18.19.0"
   }
 }
