@@ -1,7 +1,7 @@
 {
   "name": "hubot-bcycle-finder",
   "description": "Get the status of nearby BCycle stations",
-  "version": "2.3.1",
+  "version": "2.3.2",
   "author": "Stephen Yeargin <stephen@yearg.in>",
   "homepage": "https://github.com/stephenyeargin/hubot-bcycle-finder",
   "license": "MIT",
