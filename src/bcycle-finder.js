@@ -65,8 +65,8 @@ module.exports = (robot) => {
     const stationColor = station.is_renting === 1 ? 'good' : 'danger';
     const stationMapLink = `https://www.google.com/maps/place/${station.lat},${station.lon}`;
 
-    switch (robot.adapterName) {
-      case 'slack':
+    switch (true) {
+      case /slack/i.test(robot.adapterName):
         payload = {
           fallback: `${stationName} > ${status} | Bikes: ${station.num_bikes_available} | Docks: ${station.num_docks_available}`,
           title: stationName,
@@ -104,8 +104,8 @@ module.exports = (robot) => {
   // Format Pricing Plan
   const formatPricingPlan = (plan) => {
     let payload;
-    switch (robot.adapterName) {
-      case 'slack':
+    switch (true) {
+      case /slack/i.test(robot.adapterName):
         payload = {
           fallback: `${plan.name} ($${plan.price}) - ${plan.description}`,
           title: `${plan.name} ($${plan.price})`,
@@ -121,8 +121,8 @@ module.exports = (robot) => {
 
   // Send message
   const sendMessage = (payload, msg) => {
-    switch (robot.adapterName) {
-      case 'slack':
+    switch (true) {
+      case /slack/i.test(robot.adapterName):
         return msg.send({
           attachments: payload,
         });
@@ -283,8 +283,8 @@ module.exports = (robot) => {
       // Parse system information
       const response = JSON.parse(body);
 
-      switch (robot.adapterName) {
-        case 'slack':
+      switch (true) {
+        case /slack/i.test(robot.adapterName):
           msg.send({
             attachments: [
               {
